@@ -1,0 +1,172 @@
+<div class="text-key-container">
+  <mat-card>
+    <mat-card-title>Search</mat-card-title>
+    <mat-card-subtitle>Search panel</mat-card-subtitle>
+    <mat-card-actions>
+      <div class="search-columns">
+        <div class="search-column">
+          <mat-form-field appearance="fill">
+            <mat-label>Code</mat-label>
+            <input matInput [(ngModel)]="textKeySearch.code">
+          </mat-form-field>
+          <mat-form-field appearance="fill">
+            <mat-label>Company</mat-label>
+            <input matInput [(ngModel)]="textKeySearch.company">
+          </mat-form-field>
+          <mat-form-field appearance="fill">
+            <mat-label>Description</mat-label>
+            <input matInput [(ngModel)]="textKeySearch.description">
+          </mat-form-field>
+        </div>
+        <div class="search-column">
+          <mat-form-field appearance="fill">
+            <mat-label>Network Type</mat-label>
+            <mat-select [formControl]="networkTypesForm" [(ngModel)]="selectedNetworkTypes" multiple>
+              <mat-option *ngFor="let type of networkTypeList" [value]="type">{{type}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="search-column">
+          <mat-form-field appearance="fill">
+            <mat-label>Printing On Documents</mat-label>
+            <mat-select [formControl]="printedOnDocumentsForm" [(ngModel)]="selectedDocumentTypes" multiple>
+              <mat-option *ngFor="let document of printedOnDocumentsList" [value]="document">{{document}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="search-buttons">
+        <button mat-raised-button (click)="clearTextKeys()">
+          <mat-icon>delete</mat-icon>
+          Clear
+        </button>
+        <button mat-raised-button color="warn" (click)="resetTextKeys()">
+          <mat-icon>clear</mat-icon>
+          Reset
+        </button>
+        <button mat-raised-button color="primary" (click)="searchTextKeys()">
+          <mat-icon>search</mat-icon>
+          Search
+        </button>
+      </div>
+    </mat-card-actions>
+  </mat-card>
+  <br>
+  <mat-card>
+    <mat-card-title>List</mat-card-title>
+    <mat-card-subtitle>View panel</mat-card-subtitle>
+    <mat-card-actions>
+      <div class="example-container mat-elevation-z8">
+        <div class="example-loading-shade"
+             *ngIf="isLoadingResults">
+          <mat-spinner *ngIf="isLoadingResults"></mat-spinner>
+        </div>
+        <div class="example-table-container">
+          <table mat-table [dataSource]="dataSource" class="example-table">
+
+            <!-- Checkbox Column -->
+            <ng-container matColumnDef="select">
+              <th mat-header-cell *matHeaderCellDef>
+                <mat-checkbox (change)="$event ? masterToggle() : null"
+                              [checked]="selection.hasValue() && isAllSelected()"
+                              [indeterminate]="selection.hasValue() && !isAllSelected()"
+                              [aria-label]="checkboxLabel()">
+                </mat-checkbox>
+              </th>
+              <td mat-cell *matCellDef="let row">
+                <mat-checkbox (click)="$event.stopPropagation()"
+                              (change)="$event ? selection.toggle(row) : null"
+                              [checked]="selection.isSelected(row)"
+                              [aria-label]="checkboxLabel(row)">
+                </mat-checkbox>
+              </td>
+            </ng-container>
+
+            <!-- Position Column -->
+            <ng-container matColumnDef="position">
+              <th mat-header-cell *matHeaderCellDef> No.</th>
+              <td mat-cell *matCellDef="let element"> {{element.position}} </td>
+            </ng-container>
+
+            <!-- Code Column -->
+            <ng-container matColumnDef="code">
+              <th mat-header-cell *matHeaderCellDef> Code</th>
+              <td mat-cell *matCellDef="let element"> {{element.code}} </td>
+            </ng-container>
+
+            <!-- Description Column -->
+            <ng-container matColumnDef="description">
+              <th mat-header-cell *matHeaderCellDef> Description</th>
+              <td mat-cell *matCellDef="let element"> {{element.description}} </td>
+            </ng-container>
+
+            <!-- Additional Info Column -->
+            <ng-container matColumnDef="additionalInfo">
+              <th mat-header-cell *matHeaderCellDef> Additional Info</th>
+              <td mat-cell *matCellDef="let element"> {{element.additionalInfo}} </td>
+            </ng-container>
+
+            <!-- Document Types Column -->
+            <ng-container matColumnDef="documentTypes">
+              <th mat-header-cell *matHeaderCellDef> Document Types</th>
+              <td mat-cell *matCellDef="let element"> {{element.documentTypes}} </td>
+            </ng-container>
+
+            <!-- Business Functions Column -->
+            <ng-container matColumnDef="businessFunctions">
+              <th mat-header-cell *matHeaderCellDef> Business Functions</th>
+              <td mat-cell *matCellDef="let element"> {{element.businessFunctions}} </td>
+            </ng-container>
+
+            <!-- Symbol Network Types -->
+            <ng-container matColumnDef="networkTypes">
+              <th mat-header-cell *matHeaderCellDef> Network Types</th>
+              <td mat-cell *matCellDef="let element"> {{element.networkTypes}} </td>
+            </ng-container>
+
+            <!-- Available For Printing Column -->
+            <ng-container matColumnDef="availableForPrinting">
+              <th mat-header-cell *matHeaderCellDef> Available For Printing</th>
+              <td mat-cell *matCellDef="let element"> {{element.availableForPrinting}} </td>
+            </ng-container>
+
+            <!-- Imported Column -->
+            <ng-container matColumnDef="imported">
+              <th mat-header-cell *matHeaderCellDef> Imported</th>
+              <td mat-cell *matCellDef="let element"> {{element.imported}} </td>
+            </ng-container>
+
+            <!-- Company Column -->
+            <ng-container matColumnDef="company">
+              <th mat-header-cell *matHeaderCellDef> Company</th>
+              <td mat-cell *matCellDef="let element"> {{element.companyCode}} </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"
+                (click)="selection.toggle(row)">
+            </tr>
+          </table>
+        </div>
+        <mat-paginator [length]="resultsLength" [pageSizeOptions]="[5, 10, 20]"
+                       showFirstLastButtons
+                       aria-label="Select page of text keys">
+        </mat-paginator>
+      </div>
+      <div class="table-buttons">
+        <button mat-raised-button color="primary" [disabled]="selection.selected.length !== 0" (click)="createTextKey()">
+          <mat-icon>add_circle</mat-icon>
+          New
+        </button>
+        <button mat-raised-button [disabled]="selection.selected.length === 0" (click)="updateTextKey(selection.selected)">
+          <mat-icon>settings</mat-icon>
+          Details
+        </button>
+        <button mat-raised-button color="warn" [disabled]="selection.selected.length === 0" (click)="deleteTextKey(selection.selected)">
+          <mat-icon>cancel</mat-icon>
+          Delete
+        </button>
+      </div>
+    </mat-card-actions>
+  </mat-card>
+</div>

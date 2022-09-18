@@ -1,0 +1,12 @@
+<div class="example-loading-shade"
+     *ngIf="isLoadingResults">
+  <mat-spinner *ngIf="isLoadingResults"></mat-spinner>
+</div>
+<h1 mat-dialog-title>Delete TextKey</h1>
+<div mat-dialog-content>
+  Would you like to delete TextKey <label class="text-key-info">{{data.code + ',' + data.description}}</label>?
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">No Thanks</button>
+  <button mat-button [mat-dialog-close]="true" cdkFocusInitial (click)="removeTextKey()">Ok</button>
+</div>
