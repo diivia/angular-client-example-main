@@ -9,7 +9,7 @@
     <div class="changing-panel-right">
       <mat-form-field appearance="fill">
         <mat-label>Code</mat-label>
-        <input matInput ngModel [(ngModel)]="textKeyForSave.code">
+        <input matInput ngModel [maxlength]="3" [(ngModel)]="textKeyForSave.code">
       </mat-form-field>
 
       <mat-form-field appearance="fill">

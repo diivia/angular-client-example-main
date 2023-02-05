@@ -9,7 +9,7 @@ import {DocumentsService} from "../../services/documents.service";
 import {NetworkTypeService} from "../../services/network-type.service";
 import {TextKeySearch} from "../../model/search/text-key-search.model";
 import {catchError, map, startWith, switchMap} from 'rxjs/operators';
-import {merge, of as observableOf} from 'rxjs';
+import {merge, Observable, of as observableOf} from 'rxjs';
 import {MatDialog} from "@angular/material/dialog";
 import {ComponentType} from "@angular/cdk/portal";
 import {DialogTextKeyRemove} from "./dialogs/remove/dialog-text-key-remove";
@@ -45,8 +45,14 @@ export class TextKeyComponent implements AfterViewInit {
               private documentsService: DocumentsService,
               private networkTypeService: NetworkTypeService,
               public dialog: MatDialog) {
-    this.networkTypeList = this.networkTypeService.getNetworkTypes();
-    this.printedOnDocumentsList = this.documentsService.getDocumentTypes();
+    this.networkTypeService.getNetworkTypes()
+      .subscribe(types => {
+        this.networkTypeList = types;
+      });
+    this.documentsService.getDocumentTypes()
+      .subscribe(documents => {
+      this.printedOnDocumentsList = documents;
+    });
     this.dataSource.paginator = this.paginator;
     this.selectedNetworkTypes = [];
     this.selectedDocumentTypes = [];
@@ -57,6 +63,10 @@ export class TextKeyComponent implements AfterViewInit {
 
   ngAfterViewInit() {
     this.loadTextKeys();
+  }
+
+  loadDocuments(): void {
+    //this.documentsService.search().subscribe(data => (this.printedOnDocumentsList.c = data));
   }
 
   loadTextKeys(): void {
