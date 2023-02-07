@@ -10,6 +10,10 @@
             <input matInput [(ngModel)]="textKeySearch.code">
           </mat-form-field>
           <mat-form-field appearance="fill">
+            <mat-label>Text Key Mapping</mat-label>
+            <input matInput [(ngModel)]="textKeySearch.textKeyMapping">
+          </mat-form-field>
+          <mat-form-field appearance="fill">
             <mat-label>Company</mat-label>
             <input matInput [(ngModel)]="textKeySearch.company">
           </mat-form-field>
@@ -92,6 +96,12 @@
             <ng-container matColumnDef="code">
               <th mat-header-cell *matHeaderCellDef> Code</th>
               <td mat-cell *matCellDef="let element"> {{element.code}} </td>
+            </ng-container>
+
+            <!-- Text Key Mapping Column -->
+            <ng-container matColumnDef="textKeyMapping">
+              <th mat-header-cell *matHeaderCellDef> Text Key Mapping</th>
+              <td mat-cell *matCellDef="let element"> {{element.textKeyMapping}} </td>
             </ng-container>
 
             <!-- Description Column -->

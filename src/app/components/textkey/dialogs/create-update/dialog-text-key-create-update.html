@@ -7,9 +7,17 @@
   <div class="changing-panel">
 
     <div class="changing-panel-right">
+      <p>
+        <mat-error *ngIf="isDuplicatedEntry">Duplicated value</mat-error>
       <mat-form-field appearance="fill">
         <mat-label>Code</mat-label>
         <input matInput ngModel [maxlength]="3" [(ngModel)]="textKeyForSave.code">
+      </mat-form-field>
+      </p>
+
+      <mat-form-field appearance="fill">
+        <mat-label>Text Key Mapping</mat-label>
+        <input matInput ngModel [maxlength]="3" [(ngModel)]="textKeyForSave.textKeyMapping">
       </mat-form-field>
 
       <mat-form-field appearance="fill">
@@ -51,10 +59,16 @@
         </mat-select>
       </mat-form-field>
 
+
+      <p>
+        <mat-error *ngIf="isDuplicatedEntry">Duplicated value</mat-error>
       <mat-form-field appearance="fill">
         <mat-label>Company Code</mat-label>
         <input matInput [(ngModel)]="textKeyForSave.companyCode">
       </mat-form-field>
+
+      </p>
+
 
       <mat-checkbox class="example-margin" [(ngModel)]="textKeyForSave.availableForPrinting">Available for printing</mat-checkbox>
       <mat-checkbox class="example-margin" [(ngModel)]="textKeyForSave.imported">Is Imported</mat-checkbox>
@@ -65,5 +79,5 @@
 </mat-dialog-content>
 <mat-dialog-actions align="end">
   <button mat-button mat-dialog-close>Cancel</button>
-  <button mat-button [mat-dialog-close]="true" cdkFocusInitial (click)="createUpdateTextKey()">Save</button>
+  <button mat-button cdkFocusInitial (click)="createUpdateTextKey()">Save</button>
 </mat-dialog-actions>

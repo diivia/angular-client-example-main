@@ -66,7 +66,8 @@ export class TextKeyService {
   }
 
   save(textKey: TextKey): Observable<TextKey> {
-    return this.http.post<TextKey>(this.SAVE, textKey);
+    return this.http.post<TextKey>(this.SAVE, textKey, httpOptions)
+      .pipe(catchError(this.handleError));
   }
 
 }

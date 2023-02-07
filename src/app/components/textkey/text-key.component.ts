@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
 import {FormControl} from "@angular/forms";
 import {SelectionModel} from "@angular/cdk/collections";
 import {MatTableDataSource} from "@angular/material/table";
@@ -20,7 +20,7 @@ import {DialogTextKeyCreateUpdate} from "./dialogs/create-update/dialog-text-key
   templateUrl: './text-key.component.html',
   styleUrls: ['./text-key.component.css']
 })
-export class TextKeyComponent implements AfterViewInit {
+export class TextKeyComponent implements AfterViewInit, OnInit {
 
   networkTypesForm = new FormControl('');
   networkTypeList: string[] = [];
@@ -29,7 +29,7 @@ export class TextKeyComponent implements AfterViewInit {
   printedOnDocumentsList: string[] = [];
 
   displayedColumns: string[] = ['select', 'position', 'code', 'description', 'additionalInfo', 'documentTypes',
-    'businessFunctions', 'networkTypes', 'availableForPrinting', 'imported', 'company'];
+    'businessFunctions', 'networkTypes', 'availableForPrinting', 'imported', 'company', 'textKeyMapping'];
   dataSource = new MatTableDataSource<TextKey>([]);
   selection = new SelectionModel<TextKey>(false, []);
 
@@ -45,28 +45,30 @@ export class TextKeyComponent implements AfterViewInit {
               private documentsService: DocumentsService,
               private networkTypeService: NetworkTypeService,
               public dialog: MatDialog) {
+
+    this.dataSource.paginator = this.paginator;
+    this.selectedNetworkTypes = [];
+    this.selectedDocumentTypes = [];
+    this.textKeySearch = {
+      code: null, textKeyMapping: null, description: null, company: null, documentTypes: null, networkTypes: null, page: 0, pageSize: 0
+    };
+  }
+
+  ngOnInit(): void {
     this.networkTypeService.getNetworkTypes()
       .subscribe(types => {
         this.networkTypeList = types;
       });
     this.documentsService.getDocumentTypes()
       .subscribe(documents => {
-      this.printedOnDocumentsList = documents;
-    });
-    this.dataSource.paginator = this.paginator;
-    this.selectedNetworkTypes = [];
-    this.selectedDocumentTypes = [];
-    this.textKeySearch = {
-      code: null, description: null, company: null, documentTypes: null, networkTypes: null, page: 0, pageSize: 0
-    };
-  }
+        this.printedOnDocumentsList = documents;
+      });
+    }
+
+
 
   ngAfterViewInit() {
     this.loadTextKeys();
-  }
-
-  loadDocuments(): void {
-    //this.documentsService.search().subscribe(data => (this.printedOnDocumentsList.c = data));
   }
 
   loadTextKeys(): void {
@@ -106,6 +108,7 @@ export class TextKeyComponent implements AfterViewInit {
 
   resetTextKeys() {
     this.textKeySearch.code = null;
+    this.textKeySearch.textKeyMapping = null;
     this.textKeySearch.description = null;
     this.textKeySearch.company = null;
     this.selectedNetworkTypes = [];
@@ -115,6 +118,7 @@ export class TextKeyComponent implements AfterViewInit {
 
   clearTextKeys() {
     this.textKeySearch.code = null;
+    this.textKeySearch.textKeyMapping = null;
     this.textKeySearch.description = null;
     this.textKeySearch.company = null;
     this.selectedNetworkTypes = [];
